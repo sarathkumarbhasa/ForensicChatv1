@@ -4,6 +4,7 @@ import { Send, Paperclip, Shield, Globe, Download, Loader2 } from 'lucide-react'
 import axios from 'axios';
 import FileUpload from '../components/FileUpload';
 import ChatBubble from '../components/ChatBubble';
+import { API_BASE_URL } from '../config.js';
 
 export default function Chat() {
   const { sessionId } = useParams();
@@ -176,8 +177,7 @@ export default function Chat() {
 
     try {
       // In production, point to real FastAPI backend
-      const apiUrl = import.meta.env.VITE_API_URL || 'https://forensichat-backend.onrender.com';
-      const response = await axios.post(`${apiUrl}/api/query`, {
+      const response = await axios.post(`${API_BASE_URL}/api/query`, {
         session_id: sessionId,
         query: userMsg.text,
         language: language

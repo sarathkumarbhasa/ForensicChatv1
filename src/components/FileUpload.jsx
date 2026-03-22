@@ -1,7 +1,8 @@
 import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { UploadCloud, FileSpreadsheet, CheckCircle, AlertCircle } from 'lucide-react';
+import { UploadCloud, AlertCircle } from 'lucide-react';
 import axios from 'axios';
+import { API_BASE_URL } from '../config.js';
 
 export default function FileUpload({ sessionId, onUploadSuccess }) {
   const [uploading, setUploading] = useState(false);
@@ -26,8 +27,7 @@ export default function FileUpload({ sessionId, onUploadSuccess }) {
     }, 5000);
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'https://forensichat-backend.onrender.com';
-      const response = await axios.post(`${apiUrl}/api/upload`, formData, {
+      const response = await axios.post(`${API_BASE_URL}/api/upload`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
         timeout: 120000, // 2 minute timeout for Render cold starts
         onUploadProgress: (progressEvent) => {
