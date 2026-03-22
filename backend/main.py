@@ -24,6 +24,10 @@ app.add_middleware(
 # In-memory storage for dataframes (in production, use a proper cache/db)
 session_data = {}
 
+@app.get("/")
+async def root():
+    return {"status": "ok", "app": "ForensicChat API", "docs": "/docs"}
+
 class QueryRequest(BaseModel):
     session_id: str
     query: str
