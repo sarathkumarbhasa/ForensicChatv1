@@ -20,21 +20,33 @@ export default function FileUpload({ sessionId, onUploadSuccess }) {
     formData.append('file', file);
     formData.append('session_id', sessionId);
 
+    // Show "waking up" message after 5 seconds
+    const wakeTimer = setTimeout(() => {
+      setError('⏳ Backend is waking up (Render cold start). This can take 30–60 seconds. Please wait...');
+    }, 5000);
+
     try {
-      // In a real app, this would point to the deployed FastAPI backend
-      // For this demo, we'll assume it's running locally or proxy is set
       const apiUrl = import.meta.env.VITE_API_URL || 'https://forensichat-backend.onrender.com';
       const response = await axios.post(`${apiUrl}/api/upload`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
+        timeout: 120000, // 2 minute timeout for Render cold starts
         onUploadProgress: (progressEvent) => {
+          clearTimeout(wakeTimer);
+          setError(null);
           const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
           setProgress(percentCompleted);
         }
       });
 
+      clearTimeout(wakeTimer);
       onUploadSuccess(response.data);
     } catch (err) {
-      setError(err.response?.data?.detail || 'Failed to upload file. Ensure backend is running on port 8000.');
+      clearTimeout(wakeTimer);
+      if (err.code === 'ECONNABORTED' || err.message?.includes('timeout')) {
+        setError('⏱️ Request timed out. The backend may still be waking up — please try uploading again in 30 seconds.');
+      } else {
+        setError(err.response?.data?.detail || `Upload failed: ${err.message || 'Please ensure the backend is running.'}`);
+      }
     } finally {
       setUploading(false);
     }
