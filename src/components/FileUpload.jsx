@@ -23,7 +23,7 @@ export default function FileUpload({ sessionId, onUploadSuccess }) {
     try {
       // In a real app, this would point to the deployed FastAPI backend
       // For this demo, we'll assume it's running locally or proxy is set
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      const apiUrl = import.meta.env.VITE_API_URL || 'https://forensichat-backend.onrender.com';
       const response = await axios.post(`${apiUrl}/api/upload`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
         onUploadProgress: (progressEvent) => {

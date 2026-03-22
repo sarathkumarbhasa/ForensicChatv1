@@ -176,7 +176,7 @@ export default function Chat() {
 
     try {
       // In production, point to real FastAPI backend
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      const apiUrl = import.meta.env.VITE_API_URL || 'https://forensichat-backend.onrender.com';
       const response = await axios.post(`${apiUrl}/api/query`, {
         session_id: sessionId,
         query: userMsg.text,
