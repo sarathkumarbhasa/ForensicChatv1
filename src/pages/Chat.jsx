@@ -227,18 +227,6 @@ export default function Chat() {
             )}
           </div>
 
-          {dataUploaded && (
-            <div className="mb-6 mx-4 p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg">
-              <div className="flex items-center space-x-2 text-amber-400 mb-1">
-                <FlaskConical className="h-4 w-4" />
-                <span className="text-[10px] font-bold uppercase tracking-wider">Demo Version</span>
-              </div>
-              <p className="text-[11px] text-amber-200/70 leading-relaxed">
-                Processing complete. This is an early preview—analytics are deterministic but UI is in beta.
-              </p>
-            </div>
-          )}
-
           <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 px-4">Language</div>
           <div className="flex flex-col gap-2">
             {[
@@ -295,6 +283,21 @@ export default function Chat() {
             <span>Secure Connection</span>
           </div>
         </header>
+
+        {/* Persistent Demo Banner */}
+        {dataUploaded && (
+          <div className="bg-amber-50 border-b border-amber-200 px-6 py-2 flex items-center justify-between shadow-sm">
+            <div className="flex items-center">
+              <FlaskConical className="h-4 w-4 text-amber-500 mr-2" />
+              <span className="text-xs font-medium text-amber-800">
+                <span className="font-bold">Demo Version:</span> Dataset processed successfully. Analytics are deterministic (Pandas + NetworkX).
+              </span>
+            </div>
+            <span className="text-[10px] text-amber-600 font-semibold uppercase tracking-widest bg-amber-100 px-2 py-0.5 rounded border border-amber-200">
+              Field Preview
+            </span>
+          </div>
+        )}
 
         {/* Chat Messages / Upload Area */}
         <div className="flex-1 overflow-y-auto p-6">
