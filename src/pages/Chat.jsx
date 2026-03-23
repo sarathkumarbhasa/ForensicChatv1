@@ -228,15 +228,28 @@ export default function Chat() {
           </div>
 
           <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Language</div>
-          <select 
-            value={language}
-            onChange={(e) => setLanguage(e.target.value)}
-            className="w-full bg-white/5 border border-white/10 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-blue-500"
-          >
-            <option value="en">English</option>
-            <option value="hi">Hindi (हिंदी)</option>
-            <option value="te">Telugu (తెలుగు)</option>
-          </select>
+          <div className="flex flex-col gap-2">
+            {[
+              { code: 'en', label: 'English', sub: 'EN' },
+              { code: 'hi', label: 'Hindi', sub: 'हिंदी' },
+              { code: 'te', label: 'Telugu', sub: 'తెలుగు' },
+            ].map(lang => (
+              <button
+                key={lang.code}
+                onClick={() => setLanguage(lang.code)}
+                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-all border ${
+                  language === lang.code
+                    ? 'bg-blue-600 border-blue-500 text-white shadow-md'
+                    : 'bg-white/5 border-white/10 text-slate-300 hover:bg-white/10 hover:border-white/20'
+                }`}
+              >
+                <span>{lang.label}</span>
+                <span className={`text-xs px-1.5 py-0.5 rounded font-bold ${language === lang.code ? 'bg-blue-500 text-white' : 'bg-white/10 text-slate-400'}`}>
+                  {lang.sub}
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="p-4 border-t border-white/10">

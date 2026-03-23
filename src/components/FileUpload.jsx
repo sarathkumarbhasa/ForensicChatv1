@@ -16,39 +16,32 @@ export default function FileUpload({ sessionId, onUploadSuccess }) {
     setUploading(true);
     setError(null);
     setProgress(0);
+    setUploaded(true); // Show demo banner immediately
 
     const file = acceptedFiles[0];
     const formData = new FormData();
     formData.append('file', file);
     formData.append('session_id', sessionId);
 
-    // Show "waking up" message after 5 seconds
-    const wakeTimer = setTimeout(() => {
-      setError('⏳ Backend is waking up (Render cold start). This can take 30–60 seconds. Please wait...');
-    }, 5000);
-
     try {
       const response = await axios.post(`${API_BASE_URL}/api/upload`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
-        timeout: 120000, // 2 minute timeout for Render cold starts
+        timeout: 120000,
         onUploadProgress: (progressEvent) => {
-          clearTimeout(wakeTimer);
           setError(null);
           const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
           setProgress(percentCompleted);
         }
       });
 
-      clearTimeout(wakeTimer);
-      setUploaded(true);
       onUploadSuccess(response.data);
     } catch (err) {
-      clearTimeout(wakeTimer);
       if (err.code === 'ECONNABORTED' || err.message?.includes('timeout')) {
-        setError('⏱️ Request timed out. The backend may still be waking up — please try uploading again in 30 seconds.');
+        setError('⏱️ Upload timed out. Please try again.');
       } else {
         setError(err.response?.data?.detail || `Upload failed: ${err.message || 'Please ensure the backend is running.'}`);
       }
+      setUploaded(false); // Hide banner if it failed early
     } finally {
       setUploading(false);
     }
@@ -102,13 +95,17 @@ export default function FileUpload({ sessionId, onUploadSuccess }) {
       )}
 
       {uploaded && (
-        <div className="mt-5 p-4 bg-amber-50 border border-amber-300 rounded-xl flex items-start text-amber-800 shadow-sm">
-          <FlaskConical className="h-5 w-5 mr-3 flex-shrink-0 mt-0.5 text-amber-500" />
+        <div className="mt-5 p-4 bg-amber-50 border border-amber-300 rounded-xl flex items-start text-amber-800 shadow-sm animate-in fade-in slide-in-from-top-4 duration-500">
+          <FlaskConical className={`h-5 w-5 mr-3 flex-shrink-0 mt-0.5 text-amber-500 ${uploading ? 'animate-pulse' : ''}`} />
           <div>
-            <p className="font-semibold text-sm">🚧 Demo Version — Still in Development</p>
+            <p className="font-semibold text-sm">
+              {uploading ? "🏗️ Demo Version — Processing Dataset…" : "🚧 Demo Version — Ready to Query"}
+            </p>
             <p className="text-xs mt-1 text-amber-700">
-              This is an early demo of ForensicChat. Some features may be limited or incomplete.
-              Your dataset has been uploaded successfully — you can now try querying it below.
+              {uploading 
+                ? "This is an early demo. We're currently processing your file (cold starts may take 30-60s). Please stay on this page."
+                : "Your dataset has been processed successfully. You can now try querying it below with natural language."
+              }
             </p>
           </div>
         </div>
