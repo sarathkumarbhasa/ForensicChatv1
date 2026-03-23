@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { UploadCloud, AlertCircle } from 'lucide-react';
+import { UploadCloud, AlertCircle, FlaskConical } from 'lucide-react';
 import axios from 'axios';
 import { API_BASE_URL } from '../config.js';
 
@@ -8,6 +8,7 @@ export default function FileUpload({ sessionId, onUploadSuccess }) {
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState(null);
+  const [uploaded, setUploaded] = useState(false);
 
   const onDrop = useCallback(async (acceptedFiles) => {
     if (acceptedFiles.length === 0) return;
@@ -39,6 +40,7 @@ export default function FileUpload({ sessionId, onUploadSuccess }) {
       });
 
       clearTimeout(wakeTimer);
+      setUploaded(true);
       onUploadSuccess(response.data);
     } catch (err) {
       clearTimeout(wakeTimer);
@@ -96,6 +98,19 @@ export default function FileUpload({ sessionId, onUploadSuccess }) {
         <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start text-red-700">
           <AlertCircle className="h-5 w-5 mr-3 flex-shrink-0 mt-0.5" />
           <p>{error}</p>
+        </div>
+      )}
+
+      {uploaded && (
+        <div className="mt-5 p-4 bg-amber-50 border border-amber-300 rounded-xl flex items-start text-amber-800 shadow-sm">
+          <FlaskConical className="h-5 w-5 mr-3 flex-shrink-0 mt-0.5 text-amber-500" />
+          <div>
+            <p className="font-semibold text-sm">🚧 Demo Version — Still in Development</p>
+            <p className="text-xs mt-1 text-amber-700">
+              This is an early demo of ForensicChat. Some features may be limited or incomplete.
+              Your dataset has been uploaded successfully — you can now try querying it below.
+            </p>
+          </div>
         </div>
       )}
     </div>
