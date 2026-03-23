@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Send, Paperclip, Shield, Globe, Download, Loader2 } from 'lucide-react';
+import { Send, Paperclip, Shield, Globe, Download, Loader2, FlaskConical } from 'lucide-react';
 import axios from 'axios';
 import FileUpload from '../components/FileUpload';
 import ChatBubble from '../components/ChatBubble';
@@ -227,7 +227,19 @@ export default function Chat() {
             )}
           </div>
 
-          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Language</div>
+          {dataUploaded && (
+            <div className="mb-6 mx-4 p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+              <div className="flex items-center space-x-2 text-amber-400 mb-1">
+                <FlaskConical className="h-4 w-4" />
+                <span className="text-[10px] font-bold uppercase tracking-wider">Demo Version</span>
+              </div>
+              <p className="text-[11px] text-amber-200/70 leading-relaxed">
+                Processing complete. This is an early preview—analytics are deterministic but UI is in beta.
+              </p>
+            </div>
+          )}
+
+          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 px-4">Language</div>
           <div className="flex flex-col gap-2">
             {[
               { code: 'en', label: 'English', sub: 'EN' },
